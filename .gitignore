@@ -1,0 +1,13 @@
+Output/
+*.o
+*.d
+*.crf
+*.axf
+*.hex
+*.map
+*.sct
+*.htm
+*.lnp
+*.dep
+*.lst
+build/
