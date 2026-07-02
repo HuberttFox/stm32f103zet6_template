@@ -11,7 +11,8 @@
                 "${workspaceFolder}/../../Drivers/SYSTEM/delay",
                 "${workspaceFolder}/../../Drivers/SYSTEM/sys",
                 "${workspaceFolder}/../../Drivers/SYSTEM/usart",
-                "${workspaceFolder}/../../Drivers/BSP/LED"
+                "${workspaceFolder}/../../Drivers/BSP/LED",
+                "${workspaceFolder}/.cmsis/include"
             ],
             "defines": [
                 "USE_HAL_DRIVER",
@@ -89,7 +90,7 @@
                 "__yield()=",
                 "__vfp_status(x,y)=0"
             ],
-            "intelliSenseMode": "msvc-x64",
+            "intelliSenseMode": "gcc-x64",
             "cStandard": "${default}",
             "cppStandard": "${default}",
             "compilerPath": "D:/Path/mingw64/bin/gcc.exe"
