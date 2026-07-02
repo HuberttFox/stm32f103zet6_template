@@ -1,111 +1,131 @@
-# STM32F103ZET6 通用模板仓库
+# STM32F103ZET6 通用开发模板
 
-本仓库基于正点原子（ALIENTEK）战舰 F103 开发板代码整理而来，作为 STM32F103ZET6 芯片的通用开发模板。
+本模板为 STM32F103ZET6 芯片提供的全面、优化的 Keil MDK-ARM 和 VS Code + EIDE 开发环境支持。
+
+## 主要特性
+
+- **驱动支持**：专为 STM32F103ZET6 设计，支持 LED, KEY 等常用外设
+- **最小模板**：`User/main.c` 提供完整的初始化和 LED 闪烁示例
+- **HAL 模块优化**：预配置 HAL 库，只启动常用模块，降低启动负担
+- **调试支持**：Keil 和 EIDE 中均内置完整的调试配置
+- **版本控制**：基于 git 的开发模板，支持分支管理
 
 ## 目录结构
 
 ```
 ├── Drivers/
 │   ├── BSP/                  # 板级支持包
-│   │   ├── LED/              # LED 驱动 (PB5/PE5)
-│   │   └── KEY/              # 按键驱动 (PE4/PE3/PE2/PA0)
-│   ├── CMSIS/                # ARM Cortex-M3 CMSIS 核心层
-│   ├── STM32F1xx_HAL_Driver/ # ST 官方 HAL/LL 驱动库
+│   │   ├── LED/              # LED 驱动
+│   │   └── KEY/              # 按键驱动
+│   ├── CMSIS/                # ARM Cortex-M3 CMSIS 核心
+│   ├── STM32F1xx_HAL_Driver/ # ST HAL 驱动库
 │   └── SYSTEM/               # 系统级支持库
-│       ├── sys/              # 系统函数（时钟初始化、NVIC、WFI、待机等）
-│       ├── delay/            # SysTick 延时（delay_us/delay_ms）
-│       └── usart/            # 串口驱动（USART1, printf 重定向）
-├── Middlewares/               # 中间件目录（当前为空）
+│       ├── sys/              # 系统初始化、NVIC、WFI 等
+│       ├── delay/            # SysTick 延时
+│       └── usart/            # 串口驱动和 printf
 ├── Projects/
-│   └── MDK-ARM/              # Keil uVision 项目 + VS Code EIDE 配置
+│   └── MDK-ARM/              # 编译环境配置
 ├── User/
 │   ├── main.c                # 主程序模板
-│   ├── stm32f1xx_hal_conf.h  # HAL 库配置
-│   ├── stm32f1xx_it.c        # 中断服务函数
-│   └── stm32f1xx_it.h        # 中断声明
-├── keilkill.bat              # Keil 编译中间件清理脚本
-├── README.md                 # 本文件
+│   ├── stm32f1xx_hal_conf.h  # HAL 配置文件
+│   └── stm32f1xx_it.c        # 中断服务
+├── keilkill.bat              # Keil 构建辅助脚本
 └── .gitignore
 ```
 
-## 与原版的差异
+## 目录介绍
 
-本模板从正点原子原始代码整理而来，主要变更如下：
+### Drivers/
+- **BSP/**：板级支持，包括 LED 和按键驱动函数
+- **CMSIS/**：ARM Cortex-M3 CMSIS 核心代码
+- **STM32F1xx_HAL_Driver/**：STM32 HAL 驱动库
+- **SYSTEM/**：系统支持层，包括时钟、延时、外设初始化
 
-### 已删除的内容
+### User/
+- **main.c**：模板主程序，包含 HAL 初始化、时钟配置、延时、串口和 LED 初始化
+- **stm32f1xx_hal_conf.h**：HAL 库的编译配置，可以启用/关闭特定外设
+- **stm32f1xx_it.c**：中断服务函数
 
-| 文件/目录 | 说明 |
-|-----------|------|
-| `Output/` | 编译产物（每次编译自动生成） |
-| `Projects/MDK-ARM/build/` | EIDE 编译输出 |
-| `Drivers/BSP/TIMER/` | 正点原子实验专用：TIM8 PWM 输入捕获 Demo |
-| `Projects/MDK-ARM/DebugConfig/` | 调试配置文件（绑定原 Demo） |
-| `README.TXT / Drivers/readme.txt` | 原始实验说明（含推广信息，功能等价由本文件替代） |
-
-> 以上内容可从 git 历史中恢复。
-
-### 已禁用/裁剪的 HAL 模块
-
-在 `User/stm32f1xx_hal_conf.h` 中，以下模块默认被注释（禁用）。若需使用，取消对应 `#define` 的注释即可：
-
-| 模块 | 宏定义 | 说明 |
-|------|--------|------|
-| CAN | `HAL_CAN_MODULE_ENABLED` | 控制器局域网 |
-| CEC | `HAL_CEC_MODULE_ENABLED` | HDMI 消费电子控制 |
-| ETH | `HAL_ETH_MODULE_ENABLED` | 以太网（需外部 PHY） |
-| HCD | `HAL_HCD_MODULE_ENABLED` | USB 主机 |
-| I2S | `HAL_I2S_MODULE_ENABLED` | I2S 音频接口 |
-| IRDA | `HAL_IRDA_MODULE_ENABLED` | 红外通信 |
-| MMC | `HAL_MMC_MODULE_ENABLED` | 多媒体卡 |
-| NAND | `HAL_NAND_MODULE_ENABLED` | NAND Flash（FSMC） |
-| NOR | `HAL_NOR_MODULE_ENABLED` | NOR Flash（FSMC） |
-| PCCARD | `HAL_PCCARD_MODULE_ENABLED` | PC 卡（FSMC） |
-| PCD | `HAL_PCD_MODULE_ENABLED` | USB 设备 |
-| RTC | `HAL_RTC_MODULE_ENABLED` | 实时时钟（需外部 32.768kHz 晶振） |
-| SD | `HAL_SD_MODULE_ENABLED` | SD 卡（SDIO） |
-| SMARTCARD | `HAL_SMARTCARD_MODULE_ENABLED` | 智能卡 |
-| SRAM | `HAL_SRAM_MODULE_ENABLED` | 外部 SRAM（FSMC） |
-
-当前 **启用的模块**：`RCC / GPIO / DMA / CORTEX / FLASH / PWR / TIM / UART / USART / SPI / I2C / ADC / DAC / IWDG / WWDG / CRC / EXTI`
-
-### 版权头清理
-
-`Drivers/BSP/LED/`、`Drivers/BSP/KEY/`、`Drivers/SYSTEM/` 下的源码文件已移除正点原子中文版权和推广信息，功能代码保持不变。
+### keilkill.bat
+Windows 下辅助脚本，用于清理 Keil 构建产物
 
 ## 开发环境
 
 ### Keil MDK-ARM (uVision 5)
 
-- 打开 `Projects/MDK-ARM/atk_f103.uvprojx`
-- 工具链：ARM Compiler 5 (AC5)
-- 目标芯片：STM32F103ZE
-- 输出：`Output/atk_f103.hex` / `atk_f103.axf`
+1. 打开 `Projects/MDK-ARM/atk_f103.uvprojx`
+2. 工具链：ARM Compiler 5 (AC5)
+3. 芯片设置：STM32F103ZE
+4. 输出文件：`Output/atk_f103.axf` (用于调试) / `atk_f103.hex` (用于下载)
 
 ### VS Code + EIDE
 
-- 安装 EIDE 插件
-- 打开工作区 `Projects/MDK-ARM/atk_f103.code-workspace`
-- 或直接打开 `Projects/MDK-ARM/` 目录
-- 构建/下载/调试均可通过 VS Code 任务或 EIDE 面板操作
+1. 安装 VS Code EIDE 插件
+2. 打开工作区 `Projects/MDK-ARM/atk_f103.code-workspace` 
+3. 或者直接打开 `Projects/MDK-ARM/` 目录
+4. 通过 VS Code 任务或 EIDE 面板执行构建、下载和调试
 
-## 模板主程序说明
+## 使用说明
 
-`User/main.c` 提供了最小启动模板：
+### 初始配置
+
+您可以直接使用模板，项目已包含必要的初始化代码。
+
+`User/main.c` 默认包含以下初始化流程：
 
 ```c
-HAL_Init();                     // HAL 库初始化
-sys_stm32_clock_init(x9);      // 系统时钟 72MHz (8MHz HSE x9)
+HAL_Init();                     // HAL 初始化
+sys_stm32_clock_init(9);       // 系统时钟 72MHz (8MHz HSE x9)
 delay_init(72);                 // 延时初始化
-usart_init(115200);             // 串口初始化 (printf)
+usart_init(115200);             // 串口初始化 (printf 功能)
 led_init();                     // LED 初始化
 ```
 
-在此基础上，可直接添加外设测试代码。
+主循环将闪烁 LED，并输出调试信息到串口。
 
-## 快速开始一个新项目
+### 扩展自定义外设
 
-1. 复制本仓库（或基于 git 创建新分支）
-2. 在 `User/` 下添加你的模块代码
-3. 在 `Drivers/BSP/` 下添加外设驱动
-4. 若需使用未启用的 HAL 模块，编辑 `stm32f1xx_hal_conf.h` 取消对应宏注释
-5. 在 Keil 或 EIDE 中构建并下载
+1. **添加外设支持**：在 `Drivers/BSP/` 中添加新的驱动模块
+2. **编辑 HAL 配置**：在 `User/stm32f1xx_hal_conf.h` 中启用需要的 HAL 模块
+3. **创建用户代码**：在 `User/` 中创建新的源文件并调用相应的 HAL API
+4. **构建项目**：使用 Keil MDK-ARM 或 VS Code EIDE 构建，下载到开发板
+
+### 示例扩展步骤
+
+```
+1. 创建新外设驱动文件夹 Drivers/BSP/NEW/
+2. 实现 NEW_init() 等初始化函数
+3. 在 User/main.c 中添加调用
+4. 重新构建并下载
+```
+
+### 添加并启用新的 HAL 模块
+
+如果您需要使用模板中禁用的 HAL 外设，请编辑 `User/stm32f1xx_hal_conf.h`
+
+以下模块默认禁用，但可以快速启用：
+- **GPIO / SPI / I2C**：常见外设通信
+- **ADC / DAC**：模拟信号采集/输出
+- **TIM**：定时控制和 PWM
+- **USART/UART**：串口通信
+
+```c
+// 示例：在 stm32f1xx_hal_conf.h 中取消注释
+#define HAL_GPIO_MODULE_ENABLED    // 默认已启用
+#define HAL_SPI_MODULE_ENABLED     // 默认禁用，若需使用请取消注释
+```
+
+## 快速入门
+
+1. 克隆此仓库到本地
+2. 选择开发工具：Keil MDK-ARM 或 VS Code + EIDE
+3. 运行示例项目，观察 LED 闪烁和串口输出
+4. 根据需要扩展外设，编写自己的代码
+5. 构建、下载和调试您的项目
+
+## 注意事项
+
+- 本模板为 STM32F103ZET6 专属，不适用于其他型号
+- 初始化代码假设使用 8MHz 外部晶振，时钟配置为 72MHz
+- 根据实际需要调整串口波特率和 LED/按键端口映射
+- 若需使用禁用模块，请确保连接了相应的外部电路
