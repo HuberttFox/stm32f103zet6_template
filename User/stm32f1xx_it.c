@@ -123,25 +123,15 @@ void DebugMon_Handler(void)
 {
 }
 
-/*******************OS 会重定义PendSV_Handler，delay.c中我们定义了SysTick_Handler，避免重复定义，注释以下两个函数****************************************/
-///**
-//  * @brief  This function handles PendSVC exception.
-//  * @param  None
-//  * @retval None
-//  */
-//void PendSV_Handler(void)
-//{
-//}
-
-///**
-//  * @brief  This function handles SysTick Handler.
-//  * @param  None
-//  * @retval None
-//  */
-//void SysTick_Handler(void)
-//{
-//  HAL_IncTick();
-//}
+/**
+  * @brief  This function handles SysTick Handler.
+  * @param  None
+  * @retval None
+  */
+void SysTick_Handler(void)
+{
+    HAL_IncTick();
+}
 
 /******************************************************************************/
 /*                 STM32F1xx Peripherals Interrupt Handlers                   */

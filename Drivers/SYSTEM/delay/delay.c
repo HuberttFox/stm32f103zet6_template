@@ -14,17 +14,24 @@ void delay_init(uint16_t sysclk)
 void delay_us(uint32_t nus)
 {
     uint32_t temp;
+    uint32_t max_nus = 0xFFFFFF / g_fac_us;
+
+    if (nus > max_nus)
+    {
+        nus = max_nus;
+    }
+
     SysTick->LOAD = nus * g_fac_us;
     SysTick->VAL = 0x00;
-    SysTick->CTRL |= 1 << 0 ;
+    SysTick->CTRL |= 1 << 0;
 
     do
     {
         temp = SysTick->CTRL;
     } while ((temp & 0x01) && !(temp & (1 << 16)));
 
-    SysTick->CTRL &= ~(1 << 0) ;
-    SysTick->VAL = 0X00;
+    SysTick->CTRL &= ~(1 << 0);
+    SysTick->VAL = 0x00;
 }
 
 void delay_ms(uint16_t nms)

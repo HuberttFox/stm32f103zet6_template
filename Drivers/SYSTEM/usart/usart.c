@@ -37,7 +37,7 @@ FILE __stdout;
 
 int fputc(int ch, FILE *f)
 {
-    while ((USART_UX->SR & 0X40) == 0);
+    while ((USART_UX->SR & 0X80) == 0);
 
     USART_UX->DR = (uint8_t)ch;
     return ch;

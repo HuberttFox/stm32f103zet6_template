@@ -29,6 +29,8 @@ void sys_standby(void)
 {
     __HAL_RCC_PWR_CLK_ENABLE();
     SET_BIT(PWR->CR, PWR_CR_PDDS);
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    __WFI();
 }
 
 void sys_soft_reset(void)
