@@ -1,5 +1,5 @@
-#include "./SYSTEM/sys/sys.h"
-#include "./SYSTEM/usart/usart.h"
+#include "SYSTEM/sys/sys.h"
+#include "SYSTEM/usart/usart.h"
 
 #if 1
 

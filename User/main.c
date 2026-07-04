@@ -1,7 +1,7 @@
-#include "./SYSTEM/sys/sys.h"
-#include "./SYSTEM/usart/usart.h"
-#include "./SYSTEM/delay/delay.h"
-#include "./BSP/LED/led.h"
+#include "SYSTEM/sys/sys.h"
+#include "SYSTEM/usart/usart.h"
+#include "SYSTEM/delay/delay.h"
+#include "BSP/LED/led.h"
 
 int main(void)
 {

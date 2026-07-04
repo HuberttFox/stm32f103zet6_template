@@ -1,4 +1,4 @@
-#include "./SYSTEM/sys/sys.h"
+#include "SYSTEM/sys/sys.h"
 
 void sys_nvic_set_vector_table(uint32_t baseaddr, uint32_t offset)
 {

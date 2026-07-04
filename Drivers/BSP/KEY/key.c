@@ -1,5 +1,5 @@
-#include "./BSP/KEY/key.h"
-#include "./SYSTEM/delay/delay.h"
+#include "BSP/KEY/key.h"
+#include "SYSTEM/delay/delay.h"
 
 void key_init(void)
 {
@@ -38,10 +38,10 @@ uint8_t key_scan(uint8_t mode)
         delay_ms(10);
         key_up = 0;
 
-        if (KEY0 == 0)  keyval = KEY0_PRES;
-        if (KEY1 == 0)  keyval = KEY1_PRES;
-        if (KEY2 == 0)  keyval = KEY2_PRES;
-        if (WK_UP == 1) keyval = WKUP_PRES;
+        if (KEY0 == 0)       keyval = KEY0_PRES;
+        else if (KEY1 == 0)  keyval = KEY1_PRES;
+        else if (KEY2 == 0)  keyval = KEY2_PRES;
+        else if (WK_UP == 1) keyval = WKUP_PRES;
     }
     else if (KEY0 == 1 && KEY1 == 1 && KEY2 == 1 && WK_UP == 0)
     {

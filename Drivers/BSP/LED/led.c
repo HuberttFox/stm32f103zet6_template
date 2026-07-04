@@ -1,4 +1,4 @@
-#include "./BSP/LED/led.h"
+#include "BSP/LED/led.h"
 
 void led_init(void)
 {

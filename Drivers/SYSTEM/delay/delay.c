@@ -1,5 +1,5 @@
-#include "./SYSTEM/sys/sys.h"
-#include "./SYSTEM/delay/delay.h"
+#include "SYSTEM/sys/sys.h"
+#include "SYSTEM/delay/delay.h"
 
 static uint16_t  g_fac_us = 0;
 

@@ -2,7 +2,7 @@
 #define __USART_H
 
 #include "stdio.h"
-#include "./SYSTEM/sys/sys.h"
+#include "SYSTEM/sys/sys.h"
 
 #define USART_TX_GPIO_PORT                  GPIOA
 #define USART_TX_GPIO_PIN                   GPIO_PIN_9
