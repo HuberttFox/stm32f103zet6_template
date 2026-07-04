@@ -500,6 +500,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Drivers\BSP\KEY\key.c</FilePath>
             </File>
+            <File>
+              <FileName>tpad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Drivers\BSP\TPAD\tpad.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
