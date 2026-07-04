@@ -1,5 +1,5 @@
-#ifndef __DELAY_H
-#define __DELAY_H
+#ifndef _DELAY_H
+#define _DELAY_H
 
 #include "SYSTEM/sys/sys.h"
 

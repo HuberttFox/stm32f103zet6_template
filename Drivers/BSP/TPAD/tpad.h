@@ -1,6 +1,7 @@
 #ifndef _TPAD_H
 #define _TPAD_H
-#include "stm32f1xx_hal.h"
+#include "stm32f1xx_hal_tim.h"
+#include "stm32f1xx_hal_gpio.h"
 
 #define TPAD_GPIO_PORT                  GPIOA
 #define TPAD_GPIO_PIN                   GPIO_PIN_1

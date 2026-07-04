@@ -18,8 +18,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32F1xx_IT_H
-#define __STM32F1xx_IT_H
+#ifndef _STM32F1XX_IT_H
+#define _STM32F1XX_IT_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -44,6 +44,6 @@ void SysTick_Handler(void);
 }
 #endif
 
-#endif /* __STM32F1xx_IT_H */
+#endif /* _STM32F1XX_IT_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -1,5 +1,5 @@
-#ifndef __SYS_H
-#define __SYS_H
+#ifndef _SYS_H
+#define _SYS_H
 
 #include "stm32f1xx.h"
 

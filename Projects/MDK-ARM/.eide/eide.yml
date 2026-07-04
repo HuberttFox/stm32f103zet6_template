@@ -63,7 +63,7 @@ targets:
         - ../../Drivers/CMSIS/Include
         - ../../Drivers
         - ../../User
-        - ../../Middlewares
+
         - .cmsis/include
         - RTE/_LED
       libList: []

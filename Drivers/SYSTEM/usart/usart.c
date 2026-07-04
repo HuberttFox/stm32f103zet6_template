@@ -133,10 +133,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 void USART_UX_IRQHandler(void)
 {
+    uint32_t timeout;
+
     HAL_UART_IRQHandler(&g_uart1_handle);
 
+    timeout = 0xFFFF;
     while (HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t *)g_rx_buffer, RXBUFFERSIZE) != HAL_OK)
     {
+        if (--timeout == 0) break;
     }
 }
 #endif

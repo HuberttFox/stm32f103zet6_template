@@ -1,5 +1,5 @@
-#ifndef __USART_H
-#define __USART_H
+#ifndef _USART_H
+#define _USART_H
 
 #include "stdio.h"
 #include "SYSTEM/sys/sys.h"
@@ -21,11 +21,12 @@
 #define USART_EN_RX                 1
 #define RXBUFFERSIZE   1
 
+#if USART_EN_RX
 extern UART_HandleTypeDef g_uart1_handle;
-
 extern uint8_t  g_usart_rx_buf[USART_REC_LEN];
 extern uint16_t g_usart_rx_sta;
 extern uint8_t g_rx_buffer[RXBUFFERSIZE];
+#endif
 
 void usart_init(uint32_t bound);
 

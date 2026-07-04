@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    Templates/Src/stm32f1xx.c
+  * @file    Templates/Src/stm32f1xx_it.c
   * @author  MCD Application Team
   * @brief   Main Interrupt Service Routines.
   *          This file provides template for all exceptions handler and 
@@ -22,7 +22,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx_it.h"
-#include "SYSTEM/sys/sys.h"
    
 /** @addtogroup STM32F1xx_HAL_Examples
   * @{
