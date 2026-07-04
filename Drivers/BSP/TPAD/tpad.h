@@ -1,29 +1,17 @@
 #ifndef _TPAD_H
 #define _TPAD_H
-
-#include <stdint.h>
 #include "stm32f1xx_hal.h"
 
-#define TPAD_GPIO_PORT GPIOA
-#define TPAD_GPIO_PIN GPIO_PIN_1
+#define TPAD_GPIO_PORT                  GPIOA
+#define TPAD_GPIO_PIN                   GPIO_PIN_1
 
-#define TPAD_TIMX_CAP TIM5
-#define TPAD_TIMX_CAP_CHY TIM_CHANNEL_2
-#define TPAD_TIMX_CAP_CHY_CCRX TIM5->CCR2
+#define TPAD_TIMX_CAP                   TIM5
+#define TPAD_TIMX_CAP_CHY               TIM_CHANNEL_2
 
-#define TPAD_GPIO_CLK_ENABLE()        \
-    do                                \
-    {                                 \
-        __HAL_RCC_GPIOA_CLK_ENABLE(); \
-    } while (0)
+#define TPAD_GPIO_CLK_ENABLE()          do{ __HAL_RCC_GPIOA_CLK_ENABLE(); }while(0)
+#define TPAD_TIMX_CAP_CHY_CLK_ENABLE()  do{ __HAL_RCC_TIM5_CLK_ENABLE(); }while(0)
 
-#define TPAD_TIMX_CAP_CHY_CLK_ENABLE() \
-    do                                 \
-    {                                  \
-        __HAL_RCC_TIM5_CLK_ENABLE();   \
-    } while (0)
-
-#define TPAD_GATE_VAL 100
+#define TPAD_GATE_VAL                   100
 
 uint8_t tpad_init(uint16_t psc);
 uint16_t tpad_get_maxval(uint8_t n);

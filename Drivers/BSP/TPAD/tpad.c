@@ -9,16 +9,16 @@ static void tpad_timx_cap_init(uint16_t arr, uint16_t psc)
     GPIO_InitTypeDef gpio_init_struct = {0};
     TIM_IC_InitTypeDef timx_cap_chy_handle = {0};
 
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_TIM5_CLK_ENABLE();
+    TPAD_GPIO_CLK_ENABLE();
+    TPAD_TIMX_CAP_CHY_CLK_ENABLE();
 
     gpio_init_struct.Pin = TPAD_GPIO_PIN;
     gpio_init_struct.Mode = GPIO_MODE_INPUT;
-    gpio_init_struct.Pull = GPIO_PULLDOWN;
+    gpio_init_struct.Pull = GPIO_NOPULL;
     gpio_init_struct.Speed = GPIO_SPEED_FREQ_MEDIUM;
     HAL_GPIO_Init(TPAD_GPIO_PORT, &gpio_init_struct);
 
-    g_timx_cap_chy_handle.Instance = TIM5;
+    g_timx_cap_chy_handle.Instance = TPAD_TIMX_CAP;
     g_timx_cap_chy_handle.Init.Prescaler = psc;
     g_timx_cap_chy_handle.Init.Period = arr;
     g_timx_cap_chy_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -29,9 +29,9 @@ static void tpad_timx_cap_init(uint16_t arr, uint16_t psc)
     timx_cap_chy_handle.ICSelection = TIM_ICSELECTION_DIRECTTI;
     timx_cap_chy_handle.ICPrescaler = TIM_ICPSC_DIV1;
     timx_cap_chy_handle.ICFilter = 0;
-    HAL_TIM_IC_ConfigChannel(&g_timx_cap_chy_handle, &timx_cap_chy_handle, TIM_CHANNEL_2);
+    HAL_TIM_IC_ConfigChannel(&g_timx_cap_chy_handle, &timx_cap_chy_handle, TPAD_TIMX_CAP_CHY);
 
-    HAL_TIM_IC_Start(&g_timx_cap_chy_handle, TIM_CHANNEL_2);
+    HAL_TIM_IC_Start(&g_timx_cap_chy_handle, TPAD_TIMX_CAP_CHY);
 }
 
 static void tpad_reset(void)
@@ -48,7 +48,7 @@ static void tpad_reset(void)
 
     HAL_Delay(5);
 
-    g_timx_cap_chy_handle.Instance->SR = 0;
+    __HAL_TIM_CLEAR_FLAG(&g_timx_cap_chy_handle, TIM_FLAG_CC2);
     g_timx_cap_chy_handle.Instance->CNT = 0;
 
     gpio_init_struct.Pin = TPAD_GPIO_PIN;
@@ -70,12 +70,14 @@ static uint16_t tpad_get_val(void)
         }
     }
 
-    return HAL_TIM_ReadCapturedValue(&g_timx_cap_chy_handle, TIM_CHANNEL_2);
+    return HAL_TIM_ReadCapturedValue(&g_timx_cap_chy_handle, TPAD_TIMX_CAP_CHY);
 }
 
 uint8_t tpad_init(uint16_t psc)
 {
-    uint8_t i, j = 0;
+    /* 时钟假设: SYSCLK=72MHz -> APB1=36MHz -> TIM5 倍频至 72MHz
+       psc=72 时定时器频率 = 72MHz/72 = 1MHz, 每 tick = 1us */
+    uint8_t i, j;
     uint16_t temp = 0;
     uint32_t sum = 0;
     uint16_t buf[10];
@@ -119,6 +121,8 @@ uint16_t tpad_get_maxval(uint8_t n)
 {
     uint16_t temp = 0;
     uint16_t maxval = 0;
+
+    if (n == 0) return 0;
 
     while (n--)
     {
