@@ -82,6 +82,8 @@ uint8_t tpad_init(uint16_t psc)
     uint32_t sum = 0;
     uint16_t buf[10];
 
+    if (psc == 0) return 1;
+
     tpad_timx_cap_init(65535, psc - 1);
 
     for (i = 0; i < 10; i++)

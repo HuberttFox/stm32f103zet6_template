@@ -5,6 +5,7 @@ static uint16_t  g_fac_us = 0;
 
 void delay_init(uint16_t sysclk)
 {
+    /* This layer owns SysTick after initialization; do not rely on stock HAL tick timeout semantics. */
     SysTick->CTRL = 0;
     HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK_DIV8);
 
@@ -34,7 +35,7 @@ void delay_us(uint32_t nus)
     SysTick->VAL = 0x00;
 }
 
-void delay_ms(uint16_t nms)
+void delay_ms(uint32_t nms)
 {
     uint32_t repeat = nms / 1000;
     uint32_t remain = nms % 1000;
