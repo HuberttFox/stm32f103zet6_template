@@ -16,75 +16,38 @@
 
 ```text
 ├── Drivers/
-│   ├── BSP/                  # 板级外设驱动
-│   │   ├── LED/              # PB5 / PE5，高电平点亮
-│   │   ├── KEY/              # PE2/3/4 低有效，PA0 WK_UP 高有效
-│   │   ├── OLED/             # PC0-PC7 8080 并行，SSD1306 0.96" 128×64
-│   │   └── TPAD/             # PA1，TIM5_CH2 输入捕获触摸检测
-│   ├── CMSIS/                # Cortex-M3 / STM32F1 CMSIS
-│   ├── STM32F1xx_HAL_Driver/ # STM32F1 HAL 库
-│   └── SYSTEM/               # 系统支持层：时钟、延时、串口
-├── Projects/MDK-ARM/         # Keil、EIDE、VS Code 工程配置
-├── User/                     # 应用入口、HAL 配置、中断入口
-├── keilkill.bat              # Windows 下清理 Keil 构建产物
-├── CLAUDE.md                 # Claude Code 项目说明
+│   ├── BSP/
+│   │   ├── LED/
+│   │   ├── KEY/
+│   │   ├── OLED/
+│   │   └── TPAD/
+│   ├── CMSIS/                # CMSIS
+│   ├── STM32F1xx_HAL_Driver/ # HAL 库
+│   └── SYSTEM/               # 系统支持
+├── Projects/MDK-ARM/         # 工程配置
+│   ├── .vscode/
+│   ├── .eide/
+│   ├── atk_f103.uvprojx
+│   └── atk_f103.code-workspace
+├── User/                     # 应用入口
+├── keilkill.bat              # 清理 Keil 产物
+├── CLAUDE.md                 # AI 项目指引
 └── README.md
 ```
 
-## 构建、下载、清理
+## 构建与下载
 
-本仓库没有 Makefile、CMake、命令行 lint 或单元测试入口。构建和下载依赖 Keil MDK-ARM 或 VS Code EIDE。
+无 Makefile/CMake。构建依赖 Keil MDK-ARM 或 VS Code EIDE。
 
-### Keil MDK-ARM
-
-1. 打开 `Projects/MDK-ARM/atk_f103.uvprojx`
-2. 选择 target `LED`
-3. Build / Rebuild
-4. 使用 ST-LINK 或 CMSIS-DAP 通过 SWD 下载
-
-### VS Code + EIDE
-
-打开 `Projects/MDK-ARM/atk_f103.code-workspace`，安装 EIDE 插件后可运行以下任务：
-
-| 任务 | 作用 |
-|---|---|
-| `build` | 调用 `${command:eide.project.build}` 编译 |
-| `rebuild` | 调用 `${command:eide.project.rebuild}` 全量重编译 |
-| `clean` | 调用 `${command:eide.project.clean}` 清理 |
-| `flash` | 调用 `${command:eide.project.uploadToDevice}` 下载 |
-| `build and flash` | 编译后下载 |
-
-EIDE 下载配置在 `Projects/MDK-ARM/.eide/eide.yml`：OpenOCD、`cmsis-dap`、target `stm32f1x`、基地址 `0x08000000`。
-
-### 清理 Keil 产物
-
-Windows 下可在仓库根目录运行：
-
-```bat
-keilkill.bat
-```
-
-脚本会递归删除多类 Keil 中间文件和输出文件，编辑前先检查删除范围。
-
-## 启动流程
-
-`User/main.c` 是固件入口，默认流程：
-
-```c
-HAL_Init();
-sys_stm32_clock_init(RCC_PLL_MUL9);  // 8MHz HSE × 9 = 72MHz
-delay_init(72);
-usart_init(115200);
-led_init();
-```
-
-主循环每 500ms 翻转 LED0，并通过 USART1 支持 `printf` 输出。
+- **Keil:** 打开 `Projects/MDK-ARM/atk_f103.uvprojx`，target `LED`，Build。ST-LINK/CMSIS-DAP SWD 下载。
+- **VS Code + EIDE:** 打开 `Projects/MDK-ARM/atk_f103.code-workspace`，运行 task `build` → `flash`。下载配置见 `.eide/eide.yml`（OpenOCD, cmsis-dap, stm32f1x）。
+- **清理:** `keilkill.bat`（**编辑前检查删除范围**）。
 
 ## 架构说明
 
 ### `User/`
 
-- `main.c`: 应用入口，负责 HAL、时钟、延时、串口、BSP 初始化。
+- `main.c`: 应用入口，负责 HAL、时钟、延时、串口、BSP 初始化。默认流程：`HAL_Init()` → `sys_stm32_clock_init(RCC_PLL_MUL9)` → `delay_init(72)` → `usart_init(115200)` → `led_init()`。主循环 500ms 翻转 LED0，`printf` 通过 USART1 输出。
 - `stm32f1xx_hal_conf.h`: HAL 模块开关。当前模板启用了 GPIO/RCC/PWR/CORTEX/TIM/UART/DMA/EXTI 等模块，也保留部分暂未使用模块供扩展。
 - `stm32f1xx_it.c`: Cortex 异常入口和 `SysTick_Handler()`，其中 `SysTick_Handler()` 调用 `HAL_IncTick()`。
 
@@ -103,7 +66,7 @@ BSP 模块采用固定模式：头文件放引脚、时钟使能宏和公开 API
 | LED | `led_init()`、`LED0()`、`LED1()`、`LEDx_TOGGLE()` | PB5 / PE5，高电平点亮 |
 | KEY | `key_init()`、`key_scan(mode)` | PE4/PE3/PE2 低有效，PA0 WK_UP 高有效，带 10ms 消抖 |
 | TPAD | `tpad_init(psc)`、`tpad_scan(mode)` | PA1 + TIM5_CH2，RC 充放电输入捕获，初始化时采样基线 |
-| OLED | `oled_init()`、`oled_refresh_gram()`、`oled_show_string()`、`oled_clear()` | PC0-PC7 8080 并行接口，128×64 帧缓冲 |
+| OLED | `oled_init()`、`oled_refresh_gram()`、`oled_show_string()`、`oled_show_num()`、`oled_clear()`、`OLED_CMD`/`OLED_DATA` | PC0-PC7 8080 并口，128×64 帧缓冲 |
 
 ## 添加新 BSP 外设
 
@@ -123,7 +86,6 @@ BSP 模块采用固定模式：头文件放引脚、时钟使能宏和公开 API
 - 默认外部晶振为 8MHz，系统时钟初始化目标为 72MHz。
 - `delay_init()` 会接管 SysTick 做忙等待延时；调用后不要假设 HAL timeout / `HAL_GetTick()` 行为等同于 stock HAL。
 - TPAD 注释和参数默认假设 TIM5 时钟为 72MHz；常用 `tpad_init(72)` 让定时器 tick 为 1us。
-- LED 高电平点亮；KEY0/1/2 低电平按下，WK_UP 高电平按下。
 - OLED 8080 并口占用了 PC0-PC7（数据）、PD3（RS）、PD6（CS）、PG13（RD）、PG14（WR）、PG15（RST），添加其他外设时注意引脚不冲突。
 - OLED 使用双缓冲 + `oled_refresh_gram()` 模式，所有绘图操作先写内存缓冲区，再一次性刷入 SSD1306 显存。
 - Keil / EIDE 工程文件容易产生格式噪声，改 XML/YAML 时尽量只改必要片段。
