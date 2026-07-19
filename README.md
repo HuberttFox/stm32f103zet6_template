@@ -19,6 +19,7 @@
 │   ├── BSP/                  # 板级外设驱动
 │   │   ├── LED/              # PB5 / PE5，高电平点亮
 │   │   ├── KEY/              # PE2/3/4 低有效，PA0 WK_UP 高有效
+│   │   ├── OLED/             # PC0-PC7 8080 并行，SSD1306 0.96" 128×64
 │   │   └── TPAD/             # PA1，TIM5_CH2 输入捕获触摸检测
 │   ├── CMSIS/                # Cortex-M3 / STM32F1 CMSIS
 │   ├── STM32F1xx_HAL_Driver/ # STM32F1 HAL 库
@@ -102,6 +103,7 @@ BSP 模块采用固定模式：头文件放引脚、时钟使能宏和公开 API
 | LED | `led_init()`、`LED0()`、`LED1()`、`LEDx_TOGGLE()` | PB5 / PE5，高电平点亮 |
 | KEY | `key_init()`、`key_scan(mode)` | PE4/PE3/PE2 低有效，PA0 WK_UP 高有效，带 10ms 消抖 |
 | TPAD | `tpad_init(psc)`、`tpad_scan(mode)` | PA1 + TIM5_CH2，RC 充放电输入捕获，初始化时采样基线 |
+| OLED | `oled_init()`、`oled_refresh_gram()`、`oled_show_string()`、`oled_clear()` | PC0-PC7 8080 并行接口，128×64 帧缓冲 |
 
 ## 添加新 BSP 外设
 
@@ -122,5 +124,7 @@ BSP 模块采用固定模式：头文件放引脚、时钟使能宏和公开 API
 - `delay_init()` 会接管 SysTick 做忙等待延时；调用后不要假设 HAL timeout / `HAL_GetTick()` 行为等同于 stock HAL。
 - TPAD 注释和参数默认假设 TIM5 时钟为 72MHz；常用 `tpad_init(72)` 让定时器 tick 为 1us。
 - LED 高电平点亮；KEY0/1/2 低电平按下，WK_UP 高电平按下。
+- OLED 8080 并口占用了 PC0-PC7（数据）、PD3（RS）、PD6（CS）、PG13（RD）、PG14（WR）、PG15（RST），添加其他外设时注意引脚不冲突。
+- OLED 使用双缓冲 + `oled_refresh_gram()` 模式，所有绘图操作先写内存缓冲区，再一次性刷入 SSD1306 显存。
 - Keil / EIDE 工程文件容易产生格式噪声，改 XML/YAML 时尽量只改必要片段。
 - `Drivers/CMSIS/` 和 `Drivers/STM32F1xx_HAL_Driver/` 是 vendor 代码，除非升级库版本，否则避免大范围修改。
