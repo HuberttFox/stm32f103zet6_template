@@ -46,7 +46,6 @@ virtualFolder:
             - path: ../../Drivers/BSP/LED/led.c
             - path: ../../Drivers/BSP/KEY/key.c
             - path: ../../Drivers/BSP/TPAD/tpad.c
-            - path: ../../Drivers/BSP/OLED/oled.c
           folders: []
 dependenceList: []
 outDir: build
